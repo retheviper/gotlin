@@ -210,7 +210,7 @@ func Test_Filter(test *testing.T) {
 	slice := testSlice()
 
 	actual := Filter(slice, func(p *Person) bool {
-		return p.age > 25
+		return p.age < 25
 	})
 
 	expected := []*Person{
@@ -232,7 +232,7 @@ func Test_FilterNot(test *testing.T) {
 	slice := testSlice()
 
 	actual := FilterNot(slice, func(p *Person) bool {
-		return p.age > 25
+		return p.age < 25
 	})
 
 	expected := []*Person{

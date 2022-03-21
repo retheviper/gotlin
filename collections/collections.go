@@ -71,12 +71,12 @@ func Reversed[T any](slice []*T) []*T {
 
 // Filter Returns a slice containing only elements matching the given predicate.
 func Filter[T any](slice []*T, predicate func(*T) bool) []*T {
-	return filter(slice, predicate, false)
+	return filter(slice, predicate, true)
 }
 
 // FilterNot Returns a slice containing all elements not matching the given predicate.
 func FilterNot[T any](slice []*T, predicate func(*T) bool) []*T {
-	return filter(slice, predicate, true)
+	return filter(slice, predicate, false)
 }
 
 // FilterIndexed Returns a slice containing only elements matching the given predicate.
