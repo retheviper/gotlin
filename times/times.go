@@ -10,12 +10,13 @@ func PlusMonths(t time.Time, monthsToAdd int) time.Time {
 	if monthsToAdd == 0 {
 		return t
 	}
-	newMonth := int(t.Month()) + monthsToAdd%12
+	months := int(t.Month()) + monthsToAdd
+	newYear := t.Year() + (months / 12)
+	newMonth := months % 12
 	if newMonth == 0 {
 		newMonth = 12
 	}
-	r := t.AddDate(0, monthsToAdd, 0)
-	return resolveLastDay(r.Year(), newMonth, t)
+	return resolveLastDay(newYear, newMonth, t)
 }
 
 // MinusMonths Returns time with the given number of months subtracted.
