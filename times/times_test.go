@@ -21,6 +21,20 @@ func Test_PlusMonths(test *testing.T) {
 		Day:   28,
 	}
 	dates[&MonthDay{
+		Month: 1,
+		Day:   30,
+	}] = &MonthDay{
+		Month: 2,
+		Day:   28,
+	}
+	dates[&MonthDay{
+		Month: 1,
+		Day:   29,
+	}] = &MonthDay{
+		Month: 2,
+		Day:   28,
+	}
+	dates[&MonthDay{
 		Month: 3,
 		Day:   31,
 	}] = &MonthDay{
@@ -107,7 +121,7 @@ func Test_IsLeapYear_true(test *testing.T) {
 	actual := IsLeapYear(2024)
 
 	if actual != true {
-		test.Errorf("expected False but was %v", actual)
+		test.Errorf("expected True but was %v", actual)
 	}
 }
 
