@@ -77,6 +77,20 @@ func Test_MinusMonths(test *testing.T) {
 		Day:   28,
 	}
 	dates[&MonthDay{
+		Month: 3,
+		Day:   30,
+	}] = &MonthDay{
+		Month: 2,
+		Day:   28,
+	}
+	dates[&MonthDay{
+		Month: 3,
+		Day:   29,
+	}] = &MonthDay{
+		Month: 2,
+		Day:   28,
+	}
+	dates[&MonthDay{
 		Month: 5,
 		Day:   31,
 	}] = &MonthDay{
