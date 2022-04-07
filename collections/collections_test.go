@@ -28,6 +28,22 @@ func Test_IndexOf(test *testing.T) {
 	}
 }
 
+func Test_LastIndexOf(test *testing.T) {
+
+	slice := testSlice()
+
+	actual := LastIndexOf(slice, &Person{
+		name: "Test4",
+		age:  40,
+	})
+
+	expected := 3
+
+	if actual != expected {
+		test.Errorf("expected %v but was %v", expected, actual)
+	}
+}
+
 func Test_Map(test *testing.T) {
 
 	type Client struct {
@@ -94,6 +110,40 @@ func Test_MapIndexed(test *testing.T) {
 			number: 4,
 		},
 	}
+
+	checkSliceEquals(expected, actual, test)
+}
+
+func Test_FlatMap(test *testing.T) {
+
+	type City struct {
+		Name   string
+		People []*Person
+	}
+
+	slice := []*City{
+		{
+			Name:   "Metropolis",
+			People: testSlice(),
+		},
+	}
+
+	actual := FlatMap(slice, func(t *City) []*Person {
+		return t.People
+	})
+
+	expected := testSlice()
+
+	checkSliceEquals(expected, actual, test)
+}
+
+func Test_Flatten(test *testing.T) {
+
+	slice := [][]*Person{testSlice()}
+
+	actual := Flatten(slice)
+
+	expected := testSlice()
 
 	checkSliceEquals(expected, actual, test)
 }
@@ -353,6 +403,34 @@ func Test_None(test *testing.T) {
 
 	if !actual {
 		test.Errorf("expected true but was %v", actual)
+	}
+}
+
+func Test_Reduce(test *testing.T) {
+
+	type People struct {
+		Names []string
+		Ages  []int
+	}
+
+	slice := testSlice()
+
+	accumulator := &People{}
+
+	actual := Fold(slice, accumulator, func(people *People, person *Person) *People {
+		return &People{
+			Names: append(people.Names, person.name),
+			Ages:  append(people.Ages, person.age),
+		}
+	})
+
+	expected := &People{
+		Names: []string{"Test1", "Test2", "Test3", "Test4"},
+		Ages:  []int{10, 20, 30, 40},
+	}
+
+	if !reflect.DeepEqual(actual, expected) {
+		test.Errorf("expected %v but was %v", expected, actual)
 	}
 }
 

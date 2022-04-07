@@ -1,6 +1,8 @@
 package collections
 
-import "reflect"
+import (
+	"reflect"
+)
 
 // IndexOf Returns the index of the first occurrence of the specified element in the slice, or -1 if the specified element is not contained in the slice.
 func IndexOf[T any](slice []*T, element *T) int {
@@ -12,8 +14,18 @@ func IndexOf[T any](slice []*T, element *T) int {
 	return -1
 }
 
+// LastIndexOf Returns the index of the last occurrence of the specified element in the slice, or -1 if the specified element is not contained in the slice.
+func LastIndexOf[T any](slice []*T, element *T) int {
+	for index := len(slice) - 1; index >= 0; index-- {
+		if reflect.DeepEqual(slice[index], element) {
+			return index
+		}
+	}
+	return -1
+}
+
 // Map Returns a slice containing the results of applying the given transform function to each element in the original slice.
-func Map[T any, R any](slice []*T, transform func(*T) *R) []*R {
+func Map[T, R any](slice []*T, transform func(*T) *R) []*R {
 	result := make([]*R, len(slice))
 	for index, value := range slice {
 		result[index] = transform(value)
@@ -22,7 +34,7 @@ func Map[T any, R any](slice []*T, transform func(*T) *R) []*R {
 }
 
 // MapIndexed Returns a slice containing the results of applying the given transform function to each element and its index in the original slice.
-func MapIndexed[T any, R any](slice []*T, transform func(int, *T) *R) []*R {
+func MapIndexed[T, R any](slice []*T, transform func(int, *T) *R) []*R {
 	result := make([]*R, len(slice))
 	for index, value := range slice {
 		result[index] = transform(index, value)
@@ -30,10 +42,30 @@ func MapIndexed[T any, R any](slice []*T, transform func(int, *T) *R) []*R {
 	return result
 }
 
+// FlatMap Returns a single slice of all elements yielded from results of transform function being invoked on each element of original slice.
+func FlatMap[T, R any](slice []*T, transform func(*T) []*R) []*R {
+	var result []*R
+	for _, value := range slice {
+		result = append(result, transform(value)...)
+	}
+	return result
+}
+
+// Flatten RReturns a single slice of all elements from all collections in the given slice.
+func Flatten[T any](slice [][]*T) []*T {
+	var result []*T
+	for _, value := range slice {
+		for _, element := range value {
+			result = append(result, element)
+		}
+	}
+	return result
+}
+
 // Partition Splits the original collection into a pair of slices, where first slice contains elements for which predicate yielded true, while second slice contains elements for which predicate yielded false.
 func Partition[T any](slice []*T, predicate func(*T) bool) ([]*T, []*T) {
-	matches := make([]*T, 0)
-	unmatched := make([]*T, 0)
+	var matches []*T
+	var unmatched []*T
 	for _, value := range slice {
 		if predicate(value) {
 			matches = append(matches, value)
@@ -81,7 +113,7 @@ func FilterNot[T any](slice []*T, predicate func(*T) bool) []*T {
 
 // FilterIndexed Returns a slice containing only elements matching the given predicate.
 func FilterIndexed[T any](slice []*T, predicate func(int, *T) bool) []*T {
-	result := make([]*T, 0)
+	var result []*T
 	for index, value := range slice {
 		if predicate(index, value) {
 			result = append(result, value)
@@ -98,7 +130,7 @@ func FilterNotNil[T any](slice []*T) []*T {
 }
 
 func filter[T any](slice []*T, predicate func(*T) bool, predicateShouldBeTrue bool) []*T {
-	result := make([]*T, 0)
+	var result []*T
 	if predicateShouldBeTrue {
 		for _, value := range slice {
 			if predicate(value) {
@@ -143,4 +175,12 @@ func Any[T any](slice []*T, predicate func(*T) bool) bool {
 // None Returns true if the slice has no element.
 func None[T any](slice []*T, predicate func(*T) bool) bool {
 	return !All(slice, predicate)
+}
+
+// Fold Accumulates value starting with the first element and applying operation from left to right to current accumulator value and each element.
+func Fold[S, T any](slice []*T, accumulator *S, operation func(*S, *T) *S) *S {
+	for _, element := range slice {
+		accumulator = operation(accumulator, element)
+	}
+	return accumulator
 }
